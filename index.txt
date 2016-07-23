@@ -1,0 +1,2 @@
+#include(include1.txt)
+#include(include2.json)
