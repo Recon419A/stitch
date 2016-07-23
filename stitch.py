@@ -12,15 +12,14 @@ import re
 import sys
 import argparse
 
-def process_file(filename, left_strip, right_strip):
+def process_file(filename, include_regex):
     with open(filename) as f:
         file_text = f.read()
-    print(expand_includes(file_text, left_strip, right_strip))
+    return expand_includes(file_text, include_regex)
 
 
-def expand_first_include(file_text, left_strip, right_strip):
-    include_regex = left_strip + r'([\w,\.]*)' + right_strip
-    include_match = re.search(include_regex, file_text)
+def expand_first_include(file_text, include_regex):
+    include_match = include_regex.search(file_text)
     
     if include_match is None:
         return file_text
@@ -35,17 +34,17 @@ def expand_first_include(file_text, left_strip, right_strip):
     
     with open(filename) as f:
         include_text = f.read()
-        include_text = expand_includes(include_text, left_strip, right_strip)
+        include_text = expand_includes(include_text, include_regex)
         expanded_text = file_text.replace(include_statement, include_text, 1)
     
     return expanded_text
     
 
-def expand_includes(file_text, left_strip, right_strip):
-    new_text = expand_first_include(file_text, left_strip, right_strip)
+def expand_includes(file_text, include_regex):
+    new_text = expand_first_include(file_text, include_regex)
     while new_text != file_text:
         file_text = new_text
-        new_text = expand_first_include(file_text, left_strip, right_strip)
+        new_text = expand_first_include(file_text, include_regex)
     return new_text
     
     
@@ -61,10 +60,12 @@ def handle_arguments():
     
 def main():
     args = handle_arguments()
-    regex = re.compile(args.left_match + r'([\w,\.]*)' + args.right_match)
-    process_file(args.input_file, regex)
+    regex = re.compile(args.left_match + '([\w,\.]*)' + args.right_match)
+    expanded_text = process_file(args.input_file, regex)
+    if args.output_file is not None:
+        with open(args.output_file, mode='w') as f:
+            f.write(expanded_text)
+    else:
+        print(expanded_text)
     
-# process_file("index.txt", r'#include\( *', r' *\)')
-process_file("include1.txt", r'<!-- *include\(', r'\) *-->')
-
-# main()
+main()
