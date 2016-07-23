@@ -65,6 +65,6 @@ def main():
     process_file(args.input_file, regex)
     
 # process_file("index.txt", r'#include\( *', r' *\)')
-# process_file("include1.txt", r'<!-- *include\(', r'\) *-->')
+process_file("include1.txt", r'<!-- *include\(', r'\) *-->')
 
-main()
+# main()
