@@ -1,3 +1,0 @@
-Including text from include1.txt.
-
-<!--  include(include3.txt)   -->
