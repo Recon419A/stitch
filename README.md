@@ -7,11 +7,14 @@ it to the specified file.
 ## Use Case
 Stitch is particularly helpful for the case where you need to parse code written
 in one language using another language, in which instance it can be used to
-expand the includes in that code. As an example, I recently used it to expand
-the Aglio-specific includes in some markdown files I was working with. Normally,
-because those includes aren't a part of the markdown standard, and are only
-supported by Aglio, markdown that includes them isn't parseable by Drafter; with
-Stitch, it's easy and painless to make such a pipeline work.
+expand the includes in that code. Take Aglio's support for markdown includes.
+Normally, because those includes aren't a part of the markdown standard, and are
+only supported by Aglio, markdown that includes them isn't parseable by other
+tools like Drafter; with Stitch, it's easy and painless to make such a pipeline
+work.
+
+It's even possible to use Stitch to support your own personal include syntax
+in any kind of file.
 
 ## Usage at the Command Line
 Stitch is designed to run from the command line of any system that has Python 3
