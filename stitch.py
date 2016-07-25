@@ -1,5 +1,5 @@
 """
-Stitch Version 0.0.0
+Stitch Version 0.1.0
 
 The purpose of Stitch is to provide a universal, standalone includer that can be
 run on any system with Python installed. Stitch is designed to help interface
