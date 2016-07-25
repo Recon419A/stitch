@@ -10,15 +10,17 @@ directory unless specified, and will be syntax agnostic.
 
 import re
 import sys
+import os
 import argparse
 
 def process_file(filename, include_regex):
+    working_directory = os.path.dirname(filename)
     with open(filename) as f:
         file_text = f.read()
-    return expand_includes(file_text, include_regex)
+    return expand_includes(file_text, include_regex, working_directory)
 
 
-def expand_first_include(file_text, include_regex):
+def expand_first_include(file_text, include_regex, working_directory):
     include_match = include_regex.search(file_text)
     
     if include_match is None:
@@ -32,19 +34,25 @@ def expand_first_include(file_text, include_regex):
     include_statement = file_text[begin_include:end_include]
     filename = file_text[begin_filename:end_filename]
     
-    with open(filename) as f:
+    print('Working Directory: ' + os.getcwd())
+    print('Filename: ' + filename)
+    
+    with open(os.path.join(working_directory, filename)) as f:
         include_text = f.read()
-        include_text = expand_includes(include_text, include_regex)
+        include_text = expand_includes(include_text, include_regex,
+                                       working_directory)
         expanded_text = file_text.replace(include_statement, include_text, 1)
     
     return expanded_text
     
 
-def expand_includes(file_text, include_regex):
-    new_text = expand_first_include(file_text, include_regex)
+def expand_includes(file_text, include_regex, working_directory):
+    new_text = expand_first_include(file_text, include_regex,
+                                    working_directory)
     while new_text != file_text:
         file_text = new_text
-        new_text = expand_first_include(file_text, include_regex)
+        new_text = expand_first_include(file_text, include_regex,
+                                        working_directory)
     return new_text
     
     
@@ -60,7 +68,7 @@ def handle_arguments():
     
 def main():
     args = handle_arguments()
-    regex = re.compile(args.left_match + '([\w,\.]*)' + args.right_match)
+    regex = re.compile(args.left_match + '([\w,\.,\/]*)' + args.right_match)
     expanded_text = process_file(args.input_file, regex)
     if args.output_file is not None:
         with open(args.output_file, mode='w') as f:
