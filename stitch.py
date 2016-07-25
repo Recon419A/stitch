@@ -34,10 +34,10 @@ def expand_first_include(file_text, include_regex, working_directory):
     include_statement = file_text[begin_include:end_include]
     filename = file_text[begin_filename:end_filename]
     
-    print('Working Directory: ' + os.getcwd())
-    print('Filename: ' + filename)
+    file_path = os.path.join(working_directory, filename)
+    working_directory = os.path.dirname(file_path)
     
-    with open(os.path.join(working_directory, filename)) as f:
+    with open(file_path) as f:
         include_text = f.read()
         include_text = expand_includes(include_text, include_regex,
                                        working_directory)
