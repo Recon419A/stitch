@@ -68,7 +68,7 @@ def handle_arguments():
     
 def main():
     args = handle_arguments()
-    regex = re.compile(args.left_match + '([\w,\.,\/]*)' + args.right_match)
+    regex = re.compile(args.left_match + '(\S*)' + args.right_match)
     expanded_text = process_file(args.input_file, regex)
     if args.output_file is not None:
         with open(args.output_file, mode='w') as f:
