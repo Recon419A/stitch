@@ -8,6 +8,7 @@ it to the specified file.
 + Works with any language
 + Recursively expands includes
 + Performs smart indentation
++ Aborts circular includes
 
 ## Use Case
 Stitch is particularly helpful for the case where you need to parse code written
@@ -36,4 +37,6 @@ statements that have the provided left and right syntax (which are regular
 expressions), and replace them with the contents of the files whose names are
 wrappered by the left-hand and right-hand regular expressions. If an output file
 is specified, Stitch will write to that output; if not, it will print to
-standard out.
+standard out. Note that redirecting standard out will also capture warnings
+from the program; the output option should be used if this behavior is not
+desired.

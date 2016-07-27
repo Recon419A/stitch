@@ -1,5 +1,5 @@
 """
-Stitch Version 0.1.0
+Stitch Version 0.2.0
 
 The purpose of Stitch is to provide a universal, standalone includer that can be
 run on any system with Python installed. Stitch is designed to help interface
@@ -17,10 +17,12 @@ def process_file(filename, include_regex, args):
     working_directory = os.path.dirname(filename)
     with open(filename) as f:
         file_text = f.read()
-    return expand_includes(file_text, include_regex, working_directory, args)
+    return expand_includes(file_text, include_regex, working_directory, args,
+                           ())
 
 
-def expand_first_include(file_text, include_regex, working_directory, args):
+def expand_first_include(file_text, include_regex, working_directory, args,
+                         recursive_list):
     include_match = include_regex.search(file_text)
     
     if include_match is None:
@@ -34,30 +36,39 @@ def expand_first_include(file_text, include_regex, working_directory, args):
     include_statement = file_text[begin_include:end_include]
     filename = file_text[begin_filename:end_filename]
     indentation_string = get_indentation_string(file_text, include_match)
-    
+
     file_path = os.path.join(working_directory, filename)
     working_directory = os.path.dirname(file_path)
     
     with open(file_path) as f:
         include_text = f.read()
+        if file_path in recursive_list:
+            include_text = ''
+            print('WARN: circular inclusion of ' + file_path + ' in ' + 
+                  recursive_list[-1] + 
+                  ' is being replaced by empty string')
         if not args.noindent:
             include_text = add_line_beginning(include_text, indentation_string,
                                               first_line_beginning='')
         include_text = expand_includes(include_text, include_regex,
-                                       working_directory, args)
+                                       working_directory, args,
+                                       recursive_list + (file_path,))
 
         expanded_text = file_text.replace(include_statement, include_text, 1)
     
     return expanded_text
     
 
-def expand_includes(file_text, include_regex, working_directory, args):
+def expand_includes(file_text, include_regex, working_directory, args,
+                    recursive_list):
     new_text = expand_first_include(file_text, include_regex,
-                                    working_directory, args)
+                                    working_directory, args,
+                                    recursive_list)
     while new_text != file_text:
         file_text = new_text
         new_text = expand_first_include(file_text, include_regex,
-                                        working_directory, args)
+                                        working_directory, args,
+                                        recursive_list)
     return new_text
 
 
