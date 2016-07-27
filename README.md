@@ -4,6 +4,11 @@ Stitch is a universal file includer. It reads a file, expands includes in that
 file recursively (deep expansion) and then either prints the result or outputs
 it to the specified file.
 
+## Features
++ Works with any language
++ Recursively expands includes
++ Performs smart indentation
+
 ## Use Case
 Stitch is particularly helpful for the case where you need to parse code written
 in one language using another language, in which instance it can be used to
